@@ -11,6 +11,6 @@
     "author": "Charlie Unfricht",
     "content_scripts": {
         "matches": ["http://www.neopets.com/~boochi_target"],
-        "js": ["background.js"]
+        "js": ["content.js"]
     }
 }
