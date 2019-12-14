@@ -2,7 +2,7 @@
     "name": "Food Club Bet Buttons",
     "version": "0.1",
     "description": "Adds Food Club bet buttons to popular betting pet pages.  Icon made by Roundicons from www.flaticon.com.",
-    "manifest_version": "2",
+    "manifest_version": 2,
     "default_locale": "en",
     "icons": {
         "16": "res/money-bag-16px.png",
