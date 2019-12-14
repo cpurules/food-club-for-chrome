@@ -9,8 +9,10 @@
         "128": "res/money-bag-128px.png"
     },
     "author": "Charlie Unfricht",
-    "content_scripts": {
-        "matches": ["http://www.neopets.com/~boochi_target"],
-        "js": ["content.js"]
-    }
+    "content_scripts": [
+        {
+            "matches": ["http://www.neopets.com/*"],
+            "js": ["content.js"]
+        }
+    ]
 }
