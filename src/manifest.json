@@ -9,5 +9,9 @@
         "32": "res/money-bag-32px.png",
         "128": "res/money-bag-1328px.png"
     },
-    "author": "Charlie Unfricht"
+    "author": "Charlie Unfricht",
+    "background": {
+        "scripts": ["background.js"],
+        "persisitent": false
+    }
 }
