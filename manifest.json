@@ -5,9 +5,9 @@
     "manifest_version": 2,
     "default_locale": "en",
     "icons": {
-        "16": "../res/money-bag-16px.png",
-        "32": "../res/money-bag-32px.png",
-        "128": "../res/money-bag-1328px.png"
+        "16": "res/money-bag-16px.png",
+        "32": "res/money-bag-32px.png",
+        "128": "res/money-bag-128px.png"
     },
     "author": "Charlie Unfricht",
     "background": {
