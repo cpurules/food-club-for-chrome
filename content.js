@@ -2,6 +2,13 @@ if(window.location.href.endsWith("boochi_target")) {
     var betTable = document.getElementsByTagName("table")[2];
     var tableRows = betTable.querySelectorAll("tr");
 
+    var betButton = document.createElement("button");
+    var betText = document.createTextNode("Place bet");
+    betButton.appendChild(betText);
+    betTable.insertBefore(betButton, betTable.childNodes[0]);
+
+    var placedBets = false;
+    
     // The first two table rows are the headers.  We will skip these always.
     // If there are bets, the last table row is possible winnings, which we don't need
     // We will skip these
@@ -18,7 +25,7 @@ if(window.location.href.endsWith("boochi_target")) {
 
         // check for no bets
         if(i == 2 && betData[0].innerHTML == "You do not have any bets placed for this round!") {
-            return;
+            break;
         }
     
         var betInfoCell = betData[1];
