@@ -88,6 +88,25 @@ else if(window.location.href.endsWith("/foodclub.phtml?type=bet")) {
     var betObject = JSON.parse(getCookie("food_club_bet"));
 
     if(betObject != "") {
-        
+        var betForm = document.getElementsByName("bet_form")[0];
+
+        var clickEvent = new Event("click");
+        var changeEvent = new Event("change");
+        if(betObject.shipwreck != "") {
+            var shipCheck = betForm.querySelectorAll("input[type=checkbox]")[0];
+            shipCheck.checked = true;
+            shipCheck.dispatchEvent(clickEvent);
+            
+            var shipSelect = betForm.querySelectorAll("select")[0];
+            var shipOptions = shipSelect.querySelectorAll("option");
+            // First option is always "please select..."
+            for(var i = 1; i < shipOptions.length; i++) {
+                if(shipOptions[i].innerHTML.startsWith(betObject.shipwreck)) {
+                    shipSelect.value = shipOptions[i].value
+                    shipSelect.dispatchEvent(changeEvent);
+                    break;
+                }
+            }
+        }
     }
 }
