@@ -58,10 +58,15 @@ else if(window.location.href.endsWith("HGB")) {
             betButton.appendChild(document.createTextNode("Place Bet"));
             betButton.value = i - 3; // We can access this from within the onClick function
             betButton.onclick = function() {
-                document.cookie = "food_club_bet=" + JSON.stringify(betObjects[this.value]);
+                var expiresDate = new Date();
+                expiresDate.setTime(expiresDate.getTime() + 5*60*1000);
+                document.cookie = "food_club_bet=" + JSON.stringify(betObjects[this.value]) + ";expires=" + expiresDate.toUTCString() + ";path=/";
             }
 
             betData[0].replaceChild(betButton, betData[0].childNodes[0]);
         }
     }
+}
+else if(window.location.href.endsWith("/foodclub.phtml?type=bet")) {
+    
 }
