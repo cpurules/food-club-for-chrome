@@ -17,6 +17,53 @@ function getCookie(cname) {
     return "";
 }
 
+function setArenaBet(betObject, arena) {
+    if(betObject[arena] == "") {
+        return;
+    }
+
+    var arenaIndex;
+    if(arena == "shipwreck") {
+        arenaIndex = 0;
+    }
+    else if(arena == "lagoon") {
+        arenaIndex = 1;
+    }
+    else if(arena == "treasure") {
+        arenaIndex = 2;
+    }
+    else if(arena == "hidden") {
+        arenaIndex = 3;
+    }
+    else if(arena == "harpoon") {
+        arenaIndex = 4;
+    }
+    else {
+        return;
+    }
+
+    var betForm = document.getElementsByName("bet_form")[0];
+
+    var clickEvent = new Event("click");
+    var changeEvent = new Event("change");
+
+    var arenaCheck = betForm.querySelectorAll("input[type=checkbox]")[arenaIndex];
+    arenaCheck.checked = true;
+    arenaCheck.dispatchEvent(clickEvent);
+
+    var arenaSelect = betForm.querySelectorAll("select")[arenaIndex];
+    var arenaOptions = arenaSelect.querySelectorAll("option");
+    // First option is always "please select..."
+    for(var i = 1; i < arenaOptions.length; i++) {
+        var optionText = arenaOptions[i].innerHTML;
+        if(optionText.startsWith(betObject[arena]) || optionText.startsWith("The " + betObject[arena])) {
+            arenaSelect.value = arenaOptions[i].value
+            arenaSelect.dispatchEvent(changeEvent);
+            break;
+        }
+    }
+}
+
 if(window.location.href.endsWith("boochi_target")) {
     var betTable = document.getElementsByTagName("table")[2];
     var tableRows = betTable.querySelectorAll("tr");
@@ -78,6 +125,7 @@ else if(window.location.href.endsWith("HGB")) {
                 var expiresDate = new Date();
                 expiresDate.setTime(expiresDate.getTime() + 5*60*1000);
                 document.cookie = "food_club_bet=" + JSON.stringify(betObjects[this.value]) + ";expires=" + expiresDate.toUTCString() + ";path=/";
+                alert("set bet cookie!");
             }
 
             betData[0].replaceChild(betButton, betData[0].childNodes[0]);
@@ -87,26 +135,8 @@ else if(window.location.href.endsWith("HGB")) {
 else if(window.location.href.endsWith("/foodclub.phtml?type=bet")) {
     var betObject = JSON.parse(getCookie("food_club_bet"));
 
-    if(betObject != "") {
-        var betForm = document.getElementsByName("bet_form")[0];
-
-        var clickEvent = new Event("click");
-        var changeEvent = new Event("change");
-        if(betObject.shipwreck != "") {
-            var shipCheck = betForm.querySelectorAll("input[type=checkbox]")[0];
-            shipCheck.checked = true;
-            shipCheck.dispatchEvent(clickEvent);
-            
-            var shipSelect = betForm.querySelectorAll("select")[0];
-            var shipOptions = shipSelect.querySelectorAll("option");
-            // First option is always "please select..."
-            for(var i = 1; i < shipOptions.length; i++) {
-                if(shipOptions[i].innerHTML.startsWith(betObject.shipwreck)) {
-                    shipSelect.value = shipOptions[i].value
-                    shipSelect.dispatchEvent(changeEvent);
-                    break;
-                }
-            }
-        }
+    if(betObject != "") {   
+        Object.keys(betObject).forEach(function(val, idx) { setArenaBet(betObject, val) });
+        document.cookie = "food_club_bet=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
     }
 }
