@@ -1,5 +1,22 @@
 var betObjects = new Array();
 
+// Lifted from W3Schools: https://www.w3schools.com/js/js_cookies.asp
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
 if(window.location.href.endsWith("boochi_target")) {
     var betTable = document.getElementsByTagName("table")[2];
     var tableRows = betTable.querySelectorAll("tr");
@@ -68,5 +85,9 @@ else if(window.location.href.endsWith("HGB")) {
     }
 }
 else if(window.location.href.endsWith("/foodclub.phtml?type=bet")) {
-    
+    var betObject = JSON.parse(getCookie("food_club_bet"));
+
+    if(betObject != "") {
+        
+    }
 }
