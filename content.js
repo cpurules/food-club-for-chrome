@@ -8,6 +8,11 @@ if(window.location.href.endsWith("boochi_target")) {
     betTable.insertBefore(betButton, betTable.childNodes[0]);
 
     var placedBets = false;
+
+    // If the 3rd row in the table is a single cell containing the text:
+    //         You do not have any bets placed for this round!
+    // ...then no bets were placed.
+    placedBets = (tableRows[2].querySelector("td").innerHTML != "You do not have any bets placed for this round!");
     
     // The first two table rows are the headers.  We will skip these always.
     // If there are bets, the last table row is possible winnings, which we don't need
