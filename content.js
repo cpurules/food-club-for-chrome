@@ -117,7 +117,6 @@ if(window.location.href.endsWith("boochi_target")) {
                 var expiresDate = new Date();
                 expiresDate.setTime(expiresDate.getTime() + 5*60*1000);
                 document.cookie = "food_club_bet=" + JSON.stringify(betObjects[this.value]) + ";expires=" + expiresDate.toUTCString() + ";path=/";
-                alert("set bet cookie!");
             }
         }
     }
@@ -157,7 +156,6 @@ else if(window.location.href.endsWith("~HGB")) {
                 var expiresDate = new Date();
                 expiresDate.setTime(expiresDate.getTime() + 5*60*1000);
                 document.cookie = "food_club_bet=" + JSON.stringify(betObjects[this.value]) + ";expires=" + expiresDate.toUTCString() + ";path=/";
-                alert("set bet cookie!");
             }
 
             betData[0].replaceChild(betButton, betData[0].childNodes[0]);
