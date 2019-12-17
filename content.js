@@ -64,7 +64,63 @@ function setArenaBet(betObject, arena) {
     }
 }
 
-if(window.location.href.endsWith("~HGB")) {
+if(window.location.href.endsWith("boochi_target")) {
+    var betTable = document.getElementsByTagName("table")[2];
+    var tableRows = betTable.querySelectorAll("tr");
+
+    var placedBets = false;
+
+    // If the 3rd row in the table is a single cell containing the text:
+    //         You do not have any bets placed for this round!
+    // ...then no bets were placed.
+    placedBets = (tableRows[2].querySelector("td").innerHTML != "You do not have any bets placed for this round!");
+    
+    if(placedBets) {
+        var betObjects = new Array();
+        // We skip the last row because it's total possible winnings for the bettor
+        for(var i = 2; i < tableRows.length - 1; i++) {   
+            var betRow = tableRows[i];
+            var allBetData = betRow.querySelectorAll("td");
+        
+            var betInfoCell = allBetData[1];
+            var betInfo = betInfoCell.innerHTML;
+
+            var betArenas = betInfo.split("<br>");
+            var betObject = {};
+            for(betArena of betArenas) {
+                betArena = betArena.toString().trim();
+                // There is an extra line break at the end of these that we can skip
+                if(betArena != "") {
+                    var betDataRegex = /^<b>([\s\w']+)<\/b>: ([\s\w']+)$/
+                    var betData = betDataRegex.exec(betArena);
+
+                    // Since our data is modeled after HGB which we started with, we
+                    // need to massage this a little more to fit our case.  Luckily
+                    // our name check on the bet page will still work :) 
+                    var betDataArena = betData[1].split(" ")[0].toLowerCase();
+                    var betDataPirate = betData[2];
+
+                    betObject[betDataArena] = betDataPirate;
+                }
+            }
+
+            betObjects.push(betObject);
+
+            var betButton = document.createElement("button");
+            betButton.appendChild(document.createTextNode("Place Bet"));
+            betButton.value = i - 2; // We can access this from within the onClick function
+            betButton.onclick = function() {
+                var expiresDate = new Date();
+                expiresDate.setTime(expiresDate.getTime() + 5*60*1000);
+                document.cookie = "food_club_bet=" + JSON.stringify(betObjects[this.value]) + ";expires=" + expiresDate.toUTCString() + ";path=/";
+                window.location.href = "http://www.neopets.com/pirates/foodclub.phtml?type=bet";
+            }
+
+            allBetData[0].replaceChild(betButton, allBetData[0].childNodes[0]);
+        }
+    }
+}
+else if(window.location.href.endsWith("~HGB")) {
     // HGB's HTML doesn't lay this out the same way the DOM interprets it
     // Use "Inspect Element" functionality to determine the table data
     var betTable = document.getElementsByTagName("table")[1];
@@ -99,7 +155,7 @@ if(window.location.href.endsWith("~HGB")) {
                 var expiresDate = new Date();
                 expiresDate.setTime(expiresDate.getTime() + 5*60*1000);
                 document.cookie = "food_club_bet=" + JSON.stringify(betObjects[this.value]) + ";expires=" + expiresDate.toUTCString() + ";path=/";
-                alert("set bet cookie!");
+                window.location.href = "http://www.neopets.com/pirates/foodclub.phtml?type=bet";
             }
 
             betData[0].replaceChild(betButton, betData[0].childNodes[0]);
