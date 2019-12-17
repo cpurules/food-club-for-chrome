@@ -107,6 +107,18 @@ if(window.location.href.endsWith("boochi_target")) {
                     betObject[betDataArena] = betDataPirate;
                 }
             }
+
+            betObjects.push(betObject);
+
+            var betButton = document.createElement("button");
+            betButton.appendChild(document.createTextNode("Place Bet"));
+            betButton.value = i - 2; // We can access this from within the onClick function
+            betButton.onclick = function() {
+                var expiresDate = new Date();
+                expiresDate.setTime(expiresDate.getTime() + 5*60*1000);
+                document.cookie = "food_club_bet=" + JSON.stringify(betObjects[this.value]) + ";expires=" + expiresDate.toUTCString() + ";path=/";
+                alert("set bet cookie!");
+            }
         }
     }
 }
