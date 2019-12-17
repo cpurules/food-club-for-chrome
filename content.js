@@ -80,20 +80,21 @@ if(window.location.href.endsWith("boochi_target")) {
     // ...then no bets were placed.
     placedBets = (tableRows[2].querySelector("td").innerHTML != "You do not have any bets placed for this round!");
     
-    if(true) { // CHANGE TO IF(placedBets) LATER!!!!
+    if(placedBets) {
         // We skip the last row because it's total possible winnings for the bettor
         for(var i = 2; i < tableRows.length - 1; i++) {   
             var betRow = tableRows[i];
-            var betData = betRow.querySelectorAll("td");
+            var allBetData = betRow.querySelectorAll("td");
         
-            var betInfoCell = betData[1];
+            var betInfoCell = allBetData[1];
             var betInfo = betInfoCell.innerHTML;
 
             var betArenas = betInfo.split("<br>");
             for(betArena of betArenas) {
                 // There is an extra line break at the end of these that we can skip
                 if(betArena != "") {
-                    
+                    var betDataRegex = /^<b>(\w+)<\/b>: (\w+)$/;
+                    var betData = betDataRegex.exec(betArena);
                 }
             }
         }
