@@ -68,11 +68,6 @@ if(window.location.href.endsWith("boochi_target")) {
     var betTable = document.getElementsByTagName("table")[2];
     var tableRows = betTable.querySelectorAll("tr");
 
-    var betButton = document.createElement("button");
-    var betText = document.createTextNode("Place bet");
-    betButton.appendChild(betText);
-    betTable.insertBefore(betButton, betTable.childNodes[0]);
-
     var placedBets = false;
 
     // If the 3rd row in the table is a single cell containing the text:
@@ -93,9 +88,10 @@ if(window.location.href.endsWith("boochi_target")) {
             var betArenas = betInfo.split("<br>");
             var betObject = {};
             for(betArena of betArenas) {
+                betArena = betArena.toString().trim();
                 // There is an extra line break at the end of these that we can skip
                 if(betArena != "") {
-                    var betDataRegex = /^<b>(\w+)<\/b>: (\w+)$/;
+                    var betDataRegex = /^<b>([\s\w']+)<\/b>: ([\s\w']+)$/
                     var betData = betDataRegex.exec(betArena);
 
                     // Since our data is modeled after HGB which we started with, we
@@ -117,7 +113,10 @@ if(window.location.href.endsWith("boochi_target")) {
                 var expiresDate = new Date();
                 expiresDate.setTime(expiresDate.getTime() + 5*60*1000);
                 document.cookie = "food_club_bet=" + JSON.stringify(betObjects[this.value]) + ";expires=" + expiresDate.toUTCString() + ";path=/";
+                window.location.href = "http://www.neopets.com/pirates/foodclub.phtml?type=bet";
             }
+
+            allBetData[0].replaceChild(betButton, allBetData[0].childNodes[0]);
         }
     }
 }
@@ -156,6 +155,7 @@ else if(window.location.href.endsWith("~HGB")) {
                 var expiresDate = new Date();
                 expiresDate.setTime(expiresDate.getTime() + 5*60*1000);
                 document.cookie = "food_club_bet=" + JSON.stringify(betObjects[this.value]) + ";expires=" + expiresDate.toUTCString() + ";path=/";
+                window.location.href = "http://www.neopets.com/pirates/foodclub.phtml?type=bet";
             }
 
             betData[0].replaceChild(betButton, betData[0].childNodes[0]);
