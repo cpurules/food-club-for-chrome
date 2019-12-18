@@ -143,7 +143,8 @@ else if(window.location.href.endsWith("~HGB")) {
                 "shipwreck": betData[1].innerHTML,
                 "lagoon": betData[2].innerHTML,
                 "treasure": betData[3].innerHTML,
-                "harpoon": betData[4].innerHTML
+                "hidden": betData[4].innerHTML,
+                "harpoon": betData[5].innerHTML
             }
 
             betObjects.push(betObject);
@@ -172,6 +173,36 @@ else if(window.location.href.indexOf("reddit.com/r/neopets/comments/") != -1 && 
 
         if(firstCellfirstRow && firstCellfirstRow.textContent.match(/^\d+$/)) {
             // Reddit and HGB are basically the same format
+            var tableRows = thisTable.querySelectorAll("tr");
+
+            var betObjects = new Array();
+            // Skip only the first header row
+            for(var i = 1; i < tableRows.length; i++) {
+                var betRow = tableRows[i];
+                var betData = betRow.querySelectorAll("td");
+
+                var betObject = {
+                    "shipwreck": betData[1].innerHTML,
+                    "lagoon": betData[2].innerHTML,
+                    "treasure": betData[3].innerHTML,
+                    "hidden": betdata[4].innerHTML,
+                    "harpoon": betData[5].innerHTML
+                }
+
+                betObjects.push(betObject);
+
+                var betButton = document.createElement("button");
+                betButton.appendChild(document.createTextNode("Place Bet"));
+                betButton.value = i - 3; // We can access this from within the onClick function
+                betButton.onclick = function() {
+                    var expiresDate = new Date();
+                    expiresDate.setTime(expiresDate.getTime() + 5*60*1000);
+                    document.cookie = "food_club_bet=" + JSON.stringify(betObjects[this.value]) + ";expires=" + expiresDate.toUTCString() + ";path=/";
+                    window.location.href = "http://www.neopets.com/pirates/foodclub.phtml?type=bet";
+                }
+
+                betData[0].replaceChild(betButton, betData[0].childNodes[0]);
+            }
         }
     }
 }
