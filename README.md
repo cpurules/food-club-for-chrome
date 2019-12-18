@@ -6,3 +6,6 @@ The extension adds "Place Bet" buttons next to the bet descriptions on several b
 Current supported pet pages:
 * [boochi_target](http://www.neopets.com/~boochi_target)
 * [HGB](http://www.neopets.com/~HGB)
+
+Other supported pages:
+* [r/neopets Food Club threads](https://www.reddit.com/r/neopets)
