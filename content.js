@@ -94,7 +94,7 @@ if(window.location.href.endsWith("boochi_target")) {
             betButton.value = i - 2; // We can access this from within the onClick function
             betButton.onclick = function() {
                 // store in chrome storage
-                chrome.storage.local.set({"betObject" : betObject}, function() {});
+                chrome.storage.local.set({"betObject" : JSON.stringify(betObjects[this.value])}, function() {});
                 
                 window.location.href = "http://www.neopets.com/pirates/foodclub.phtml?type=bet";
             }
@@ -137,7 +137,7 @@ else if(window.location.href.endsWith("~HGB")) {
             betButton.value = i - 3; // We can access this from within the onClick function
             betButton.onclick = function() {
                 // store in chrome storage
-                chrome.storage.local.set({"betObject" : betObject}, function() {});
+                chrome.storage.local.set({"betObject" : JSON.stringify(betObjects[this.value])}, function() {});
 
                 window.location.href = "http://www.neopets.com/pirates/foodclub.phtml?type=bet";
             }
@@ -179,7 +179,7 @@ else if(window.location.href.indexOf("reddit.com/r/neopets/comments/") != -1 && 
                 betButton.value = i - 3; // We can access this from within the onClick function
                 betButton.onclick = function() {
                     // store in chrome storage
-                    chrome.storage.local.set({"betObject" : betObject}, function() {});
+                    chrome.storage.local.set({"betObject" : JSON.stringify(betObjects[this.value])}, function() {});
 
                     window.location.href = "http://www.neopets.com/pirates/foodclub.phtml?type=bet";
                 }
@@ -193,6 +193,9 @@ else if(window.location.href.endsWith("/foodclub.phtml?type=bet")) {
     // Do we have a bet object?
     chrome.storage.local.get({"betObject": null}, function(betObject) {
         if(betObject != "") {  
+            // Parse the JSON
+            betObject = JSON.parse(betObject);
+
             // Set the bet form
             Object.keys(betObject).forEach(function(val, idx) { setArenaBet(betObject, val) });
     
