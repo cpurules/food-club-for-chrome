@@ -185,7 +185,7 @@ else if(window.location.href.indexOf("reddit.com/r/neopets/comments/") != -1 && 
                     "shipwreck": betData[1].innerHTML,
                     "lagoon": betData[2].innerHTML,
                     "treasure": betData[3].innerHTML,
-                    "hidden": betdata[4].innerHTML,
+                    "hidden": betData[4].innerHTML,
                     "harpoon": betData[5].innerHTML
                 }
 
