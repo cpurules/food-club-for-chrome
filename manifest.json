@@ -11,7 +11,7 @@
     "author": "Charlie Unfricht",
     "content_scripts": [
         {
-            "matches": ["http://www.neopets.com/*"],
+            "matches": ["http://www.neopets.com/*","https://www.reddit.com/r/neopets/comments/*"],
             "js": ["content.js"]
         }
     ]
