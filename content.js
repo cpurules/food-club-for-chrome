@@ -40,7 +40,7 @@ function setArenaBet(betObject, arena) {
     for(var i = 1; i < arenaOptions.length; i++) {
         var optionText = arenaOptions[i].innerHTML;
         var optionTextRegex = new RegExp("\\b" + betObject[arena] + "\\b([tT]he\\b)?");
-        if(optionTextRegex.test(optionText))) {
+        if(optionTextRegex.test(optionText)) {
             arenaSelect.value = arenaOptions[i].value
             arenaSelect.dispatchEvent(changeEvent);
             break;
