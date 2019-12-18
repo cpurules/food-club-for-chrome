@@ -190,7 +190,7 @@ else if(window.location.href.indexOf("reddit.com/r/neopets/comments/") != -1 && 
     }
 }
 else if(window.location.href.endsWith("/foodclub.phtml?type=bet")) {
-    // do we have a bet object?
+    // Do we have a bet object?
     chrome.storage.local.get({"betObject": null}, function(betObject) {
         if(betObject != "") {  
             // Set the bet form
@@ -207,5 +207,8 @@ else if(window.location.href.endsWith("/foodclub.phtml?type=bet")) {
             betField.value = maxNP;
             betField.dispatchEvent(blurEvent);        
         }
-    })
+    });
+
+    // Clear any bet object we may have
+    chrome.storage.local.remove(["betObject"], function() {});
 }
