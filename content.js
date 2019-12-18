@@ -93,12 +93,8 @@ if(window.location.href.endsWith("boochi_target")) {
             betButton.appendChild(document.createTextNode("Place Bet"));
             betButton.value = i - 2; // We can access this from within the onClick function
             betButton.onclick = function() {
-                var expiresDate = new Date();
-                expiresDate.setTime(expiresDate.getTime() + 5*60*1000);
-                
                 // store in chrome storage
-                chrome.storage.local.set({"betObjects" : betObjects}, function() {});
-                chrome.storage.local.set({"betExpires" : expiresDate}, function() {});
+                chrome.storage.local.set({"betObject" : betObject}, function() {});
                 
                 window.location.href = "http://www.neopets.com/pirates/foodclub.phtml?type=bet";
             }
@@ -140,12 +136,8 @@ else if(window.location.href.endsWith("~HGB")) {
             betButton.appendChild(document.createTextNode("Place Bet"));
             betButton.value = i - 3; // We can access this from within the onClick function
             betButton.onclick = function() {
-                var expiresDate = new Date();
-                expiresDate.setTime(expiresDate.getTime() + 5*60*1000);
-
                 // store in chrome storage
-                chrome.storage.local.set({"betObjects" : betObjects}, function() {});
-                chrome.storage.local.set({"betExpires" : expiresDate}, function() {});
+                chrome.storage.local.set({"betObject" : betObject}, function() {});
 
                 window.location.href = "http://www.neopets.com/pirates/foodclub.phtml?type=bet";
             }
@@ -186,12 +178,8 @@ else if(window.location.href.indexOf("reddit.com/r/neopets/comments/") != -1 && 
                 betButton.appendChild(document.createTextNode("Place Bet"));
                 betButton.value = i - 3; // We can access this from within the onClick function
                 betButton.onclick = function() {
-                    var expiresDate = new Date();
-                    expiresDate.setTime(expiresDate.getTime() + 5*60*1000);
-                    
                     // store in chrome storage
-                    chrome.storage.local.set({"betObjects" : betObjects}, function() {});
-                    chrome.storage.local.set({"betExpires" : expiresDate}, function() {});
+                    chrome.storage.local.set({"betObject" : betObject}, function() {});
 
                     window.location.href = "http://www.neopets.com/pirates/foodclub.phtml?type=bet";
                 }
@@ -202,7 +190,8 @@ else if(window.location.href.indexOf("reddit.com/r/neopets/comments/") != -1 && 
     }
 }
 else if(window.location.href.endsWith("/foodclub.phtml?type=bet")) {
-    var betObject = JSON.parse(getCookie("food_club_bet"));
+    var betObject;
+    // do we have a bet object?
 
     if(betObject != "") {  
         // Set the bet form
@@ -217,8 +206,6 @@ else if(window.location.href.endsWith("/foodclub.phtml?type=bet")) {
         var betField = document.getElementsByName("bet_amount")[0];
         var blurEvent = new Event('blur');
         betField.value = maxNP;
-        betField.dispatchEvent(blurEvent);
-        
-        document.cookie = "food_club_bet=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
+        betField.dispatchEvent(blurEvent);        
     }
 }
