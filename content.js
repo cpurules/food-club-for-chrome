@@ -190,22 +190,22 @@ else if(window.location.href.indexOf("reddit.com/r/neopets/comments/") != -1 && 
     }
 }
 else if(window.location.href.endsWith("/foodclub.phtml?type=bet")) {
-    var betObject;
     // do we have a bet object?
-
-    if(betObject != "") {  
-        // Set the bet form
-        Object.keys(betObject).forEach(function(val, idx) { setArenaBet(betObject, val) });
-
-        // Pull your maximum bet
-        var content = document.getElementById("content").innerHTML;
-        var maxNPRegex = /You can only place up to\s+<b>(\d+)<\/b>/;
-        var maxNP = maxNPRegex.exec(content)[1];
-
-        // Set maximum bet
-        var betField = document.getElementsByName("bet_amount")[0];
-        var blurEvent = new Event('blur');
-        betField.value = maxNP;
-        betField.dispatchEvent(blurEvent);        
-    }
+    chrome.storage.local.get({"betObject": null}, function(betObject) {
+        if(betObject != "") {  
+            // Set the bet form
+            Object.keys(betObject).forEach(function(val, idx) { setArenaBet(betObject, val) });
+    
+            // Pull your maximum bet
+            var content = document.getElementById("content").innerHTML;
+            var maxNPRegex = /You can only place up to\s+<b>(\d+)<\/b>/;
+            var maxNP = maxNPRegex.exec(content)[1];
+    
+            // Set maximum bet
+            var betField = document.getElementsByName("bet_amount")[0];
+            var blurEvent = new Event('blur');
+            betField.value = maxNP;
+            betField.dispatchEvent(blurEvent);        
+        }
+    })
 }
