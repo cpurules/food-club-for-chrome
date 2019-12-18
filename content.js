@@ -39,7 +39,8 @@ function setArenaBet(betObject, arena) {
     // First option is always "please select..."
     for(var i = 1; i < arenaOptions.length; i++) {
         var optionText = arenaOptions[i].innerHTML;
-        if(optionText.startsWith(betObject[arena]) || optionText.startsWith("The " + betObject[arena])) {
+        var optionTextRegex = new RegExp("\\b" + betObject[arena] + "\\b([tT]he\\b)?");
+        if(optionTextRegex.test(optionText))) {
             arenaSelect.value = arenaOptions[i].value
             arenaSelect.dispatchEvent(changeEvent);
             break;
@@ -176,7 +177,7 @@ else if(window.location.href.indexOf("reddit.com/r/neopets/comments/") != -1 && 
 
                 var betButton = document.createElement("button");
                 betButton.appendChild(document.createTextNode("Place Bet"));
-                betButton.value = i - 3; // We can access this from within the onClick function
+                betButton.value = i - 1; // We can access this from within the onClick function
                 betButton.onclick = function() {
                     // store in chrome storage
                     chrome.storage.local.set({"betObject" : JSON.stringify(betObjects[this.value])}, function() {});
