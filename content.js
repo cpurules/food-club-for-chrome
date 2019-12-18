@@ -162,6 +162,19 @@ else if(window.location.href.endsWith("~HGB")) {
         }
     }
 }
+else if(window.location.href.indexOf("reddit.com/r/neopets/comments/") != -1 && window.location.href.indexOf("food_club_bets") != -1) {
+    var allTables = document.getElementsByTagName("table");
+
+    // The first table is markdown help, so we will skip it
+    for(var i = 1; i < allTables.length; i++) {
+        var thisTable = allTables[i];
+        var firstCellfirstRow = thisTable.querySelector("tr").querySelector("th, td");
+
+        if(firstCellfirstRow && firstCellfirstRow.textContent.match(/^\d+$/)) {
+            // Reddit and HGB are basically the same format
+        }
+    }
+}
 else if(window.location.href.endsWith("/foodclub.phtml?type=bet")) {
     var betObject = JSON.parse(getCookie("food_club_bet"));
 
