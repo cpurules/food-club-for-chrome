@@ -191,7 +191,8 @@ else if(window.location.href.indexOf("reddit.com/r/neopets/comments/") != -1 && 
 }
 else if(window.location.href.endsWith("/foodclub.phtml?type=bet")) {
     // Do we have a bet object?
-    chrome.storage.local.get({"betObject": null}, function(betObject) {
+    chrome.storage.local.get({"betObject": ""}, function(item) {
+        var betObject = item["betObject"];
         if(betObject != "") {  
             // Parse the JSON
             betObject = JSON.parse(betObject);
