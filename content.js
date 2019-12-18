@@ -1,22 +1,5 @@
 var betObjects = new Array();
 
-// Lifted from W3Schools: https://www.w3schools.com/js/js_cookies.asp
-function getCookie(cname) {
-    var name = cname + "=";
-    var decodedCookie = decodeURIComponent(document.cookie);
-    var ca = decodedCookie.split(';');
-    for(var i = 0; i <ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-        }
-    }
-    return "";
-}
-
 function setArenaBet(betObject, arena) {
     if(betObject[arena] == "") {
         return;
@@ -56,7 +39,8 @@ function setArenaBet(betObject, arena) {
     // First option is always "please select..."
     for(var i = 1; i < arenaOptions.length; i++) {
         var optionText = arenaOptions[i].innerHTML;
-        if(optionText.startsWith(betObject[arena]) || optionText.startsWith("The " + betObject[arena])) {
+        var optionTextRegex = new RegExp("\\b" + betObject[arena] + "\\b([tT]he\\b)?");
+        if(optionTextRegex.test(optionText)) {
             arenaSelect.value = arenaOptions[i].value
             arenaSelect.dispatchEvent(changeEvent);
             break;
@@ -110,10 +94,10 @@ if(window.location.href.endsWith("boochi_target")) {
             betButton.appendChild(document.createTextNode("Place Bet"));
             betButton.value = i - 2; // We can access this from within the onClick function
             betButton.onclick = function() {
-                var expiresDate = new Date();
-                expiresDate.setTime(expiresDate.getTime() + 5*60*1000);
-                document.cookie = "food_club_bet=" + JSON.stringify(betObjects[this.value]) + ";expires=" + expiresDate.toUTCString() + ";path=/";
-                window.location.href = "http://www.neopets.com/pirates/foodclub.phtml?type=bet";
+                // store in chrome storage
+                chrome.storage.local.set({"betObject" : JSON.stringify(betObjects[this.value])}, function() {});
+                
+                chrome.runtime.sendMessage("openFoodClub", function(response) {});
             }
 
             allBetData[0].replaceChild(betButton, allBetData[0].childNodes[0]);
@@ -143,7 +127,8 @@ else if(window.location.href.endsWith("~HGB")) {
                 "shipwreck": betData[1].innerHTML,
                 "lagoon": betData[2].innerHTML,
                 "treasure": betData[3].innerHTML,
-                "harpoon": betData[4].innerHTML
+                "hidden": betData[4].innerHTML,
+                "harpoon": betData[5].innerHTML
             }
 
             betObjects.push(betObject);
@@ -152,21 +137,83 @@ else if(window.location.href.endsWith("~HGB")) {
             betButton.appendChild(document.createTextNode("Place Bet"));
             betButton.value = i - 3; // We can access this from within the onClick function
             betButton.onclick = function() {
-                var expiresDate = new Date();
-                expiresDate.setTime(expiresDate.getTime() + 5*60*1000);
-                document.cookie = "food_club_bet=" + JSON.stringify(betObjects[this.value]) + ";expires=" + expiresDate.toUTCString() + ";path=/";
-                window.location.href = "http://www.neopets.com/pirates/foodclub.phtml?type=bet";
+                // store in chrome storage
+                chrome.storage.local.set({"betObject" : JSON.stringify(betObjects[this.value])}, function() {});
+
+                chrome.runtime.sendMessage("openFoodClub", function(response) {});
             }
 
             betData[0].replaceChild(betButton, betData[0].childNodes[0]);
         }
     }
 }
-else if(window.location.href.endsWith("/foodclub.phtml?type=bet")) {
-    var betObject = JSON.parse(getCookie("food_club_bet"));
+else if(window.location.href.indexOf("reddit.com/r/neopets/comments/") != -1 && window.location.href.indexOf("food_club_bets") != -1) {
+    var allTables = document.getElementsByTagName("table");
 
-    if(betObject != "") {   
-        Object.keys(betObject).forEach(function(val, idx) { setArenaBet(betObject, val) });
-        document.cookie = "food_club_bet=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
+    // The first table is markdown help, so we will skip it
+    for(var i = 1; i < allTables.length; i++) {
+        var thisTable = allTables[i];
+        var firstCellfirstRow = thisTable.querySelector("tr").querySelector("th, td");
+
+        if(firstCellfirstRow && firstCellfirstRow.textContent.match(/^\d+$/)) {
+            // Reddit and HGB are basically the same format
+            var tableRows = thisTable.querySelectorAll("tr");
+
+            var betObjects = new Array();
+            // Skip only the first header row
+            for(var i = 1; i < tableRows.length; i++) {
+                var betRow = tableRows[i];
+                var betData = betRow.querySelectorAll("td");
+
+                var betObject = {
+                    "shipwreck": betData[1].innerHTML,
+                    "lagoon": betData[2].innerHTML,
+                    "treasure": betData[3].innerHTML,
+                    "hidden": betData[4].innerHTML,
+                    "harpoon": betData[5].innerHTML
+                }
+
+                betObjects.push(betObject);
+
+                var betButton = document.createElement("button");
+                betButton.appendChild(document.createTextNode("Place Bet"));
+                betButton.value = i - 1; // We can access this from within the onClick function
+                betButton.onclick = function() {
+                    // store in chrome storage
+                    chrome.storage.local.set({"betObject" : JSON.stringify(betObjects[this.value])}, function() {});
+
+                    chrome.runtime.sendMessage("openFoodClub", function(response) {});
+                }
+
+                betData[0].replaceChild(betButton, betData[0].childNodes[0]);
+            }
+        }
     }
+}
+else if(window.location.href.endsWith("/foodclub.phtml?type=bet")) {
+    // Do we have a bet object?
+    chrome.storage.local.get({"betObject": ""}, function(item) {
+        var betObject = item["betObject"];
+        if(betObject != "") {  
+            // Parse the JSON
+            betObject = JSON.parse(betObject);
+
+            // Set the bet form
+            Object.keys(betObject).forEach(function(val, idx) { setArenaBet(betObject, val) });
+    
+            // Pull your maximum bet
+            var content = document.getElementById("content").innerHTML;
+            var maxNPRegex = /You can only place up to\s+<b>(\d+)<\/b>/;
+            var maxNP = maxNPRegex.exec(content)[1];
+    
+            // Set maximum bet
+            var betField = document.getElementsByName("bet_amount")[0];
+            var blurEvent = new Event('blur');
+            betField.value = maxNP;
+            betField.dispatchEvent(blurEvent);        
+        }
+    });
+
+    // Clear any bet object we may have
+    chrome.storage.local.remove(["betObject"], function() {});
 }
