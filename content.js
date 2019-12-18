@@ -100,7 +100,6 @@ if(window.location.href.endsWith("boochi_target")) {
                 chrome.storage.local.set({"betObjects" : betObjects}, function() {});
                 chrome.storage.local.set({"betExpires" : expiresDate}, function() {});
                 
-                document.cookie = "food_club_bet=" + JSON.stringify(betObjects[this.value]) + ";expires=" + expiresDate.toUTCString() + ";path=/";
                 window.location.href = "http://www.neopets.com/pirates/foodclub.phtml?type=bet";
             }
 
