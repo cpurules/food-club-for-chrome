@@ -97,7 +97,7 @@ if(window.location.href.endsWith("boochi_target")) {
                 // store in chrome storage
                 chrome.storage.local.set({"betObject" : JSON.stringify(betObjects[this.value])}, function() {});
                 
-                window.location.href = "http://www.neopets.com/pirates/foodclub.phtml?type=bet";
+                chrome.runtime.sendMessage("openFoodClub", function(response) {});
             }
 
             allBetData[0].replaceChild(betButton, allBetData[0].childNodes[0]);
@@ -140,7 +140,7 @@ else if(window.location.href.endsWith("~HGB")) {
                 // store in chrome storage
                 chrome.storage.local.set({"betObject" : JSON.stringify(betObjects[this.value])}, function() {});
 
-                window.location.href = "http://www.neopets.com/pirates/foodclub.phtml?type=bet";
+                chrome.runtime.sendMessage("openFoodClub", function(response) {});
             }
 
             betData[0].replaceChild(betButton, betData[0].childNodes[0]);
@@ -182,7 +182,7 @@ else if(window.location.href.indexOf("reddit.com/r/neopets/comments/") != -1 && 
                     // store in chrome storage
                     chrome.storage.local.set({"betObject" : JSON.stringify(betObjects[this.value])}, function() {});
 
-                    window.location.href = "http://www.neopets.com/pirates/foodclub.phtml?type=bet";
+                    chrome.runtime.sendMessage("openFoodClub", function(response) {});
                 }
 
                 betData[0].replaceChild(betButton, betData[0].childNodes[0]);
