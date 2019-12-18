@@ -1,22 +1,5 @@
 var betObjects = new Array();
 
-// Lifted from W3Schools: https://www.w3schools.com/js/js_cookies.asp
-function getCookie(cname) {
-    var name = cname + "=";
-    var decodedCookie = decodeURIComponent(document.cookie);
-    var ca = decodedCookie.split(';');
-    for(var i = 0; i <ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-        }
-    }
-    return "";
-}
-
 function setArenaBet(betObject, arena) {
     if(betObject[arena] == "") {
         return;
@@ -110,9 +93,9 @@ if(window.location.href.endsWith("boochi_target")) {
             betButton.appendChild(document.createTextNode("Place Bet"));
             betButton.value = i - 2; // We can access this from within the onClick function
             betButton.onclick = function() {
-                var expiresDate = new Date();
-                expiresDate.setTime(expiresDate.getTime() + 5*60*1000);
-                document.cookie = "food_club_bet=" + JSON.stringify(betObjects[this.value]) + ";expires=" + expiresDate.toUTCString() + ";path=/";
+                // store in chrome storage
+                chrome.storage.local.set({"betObject" : JSON.stringify(betObjects[this.value])}, function() {});
+                
                 window.location.href = "http://www.neopets.com/pirates/foodclub.phtml?type=bet";
             }
 
@@ -153,9 +136,9 @@ else if(window.location.href.endsWith("~HGB")) {
             betButton.appendChild(document.createTextNode("Place Bet"));
             betButton.value = i - 3; // We can access this from within the onClick function
             betButton.onclick = function() {
-                var expiresDate = new Date();
-                expiresDate.setTime(expiresDate.getTime() + 5*60*1000);
-                document.cookie = "food_club_bet=" + JSON.stringify(betObjects[this.value]) + ";expires=" + expiresDate.toUTCString() + ";path=/";
+                // store in chrome storage
+                chrome.storage.local.set({"betObject" : JSON.stringify(betObjects[this.value])}, function() {});
+
                 window.location.href = "http://www.neopets.com/pirates/foodclub.phtml?type=bet";
             }
 
@@ -195,9 +178,9 @@ else if(window.location.href.indexOf("reddit.com/r/neopets/comments/") != -1 && 
                 betButton.appendChild(document.createTextNode("Place Bet"));
                 betButton.value = i - 3; // We can access this from within the onClick function
                 betButton.onclick = function() {
-                    var expiresDate = new Date();
-                    expiresDate.setTime(expiresDate.getTime() + 5*60*1000);
-                    document.cookie = "food_club_bet=" + JSON.stringify(betObjects[this.value]) + ";expires=" + expiresDate.toUTCString() + ";path=/";
+                    // store in chrome storage
+                    chrome.storage.local.set({"betObject" : JSON.stringify(betObjects[this.value])}, function() {});
+
                     window.location.href = "http://www.neopets.com/pirates/foodclub.phtml?type=bet";
                 }
 
@@ -207,23 +190,29 @@ else if(window.location.href.indexOf("reddit.com/r/neopets/comments/") != -1 && 
     }
 }
 else if(window.location.href.endsWith("/foodclub.phtml?type=bet")) {
-    var betObject = JSON.parse(getCookie("food_club_bet"));
+    // Do we have a bet object?
+    chrome.storage.local.get({"betObject": ""}, function(item) {
+        var betObject = item["betObject"];
+        if(betObject != "") {  
+            // Parse the JSON
+            betObject = JSON.parse(betObject);
 
-    if(betObject != "") {  
-        // Set the bet form
-        Object.keys(betObject).forEach(function(val, idx) { setArenaBet(betObject, val) });
+            // Set the bet form
+            Object.keys(betObject).forEach(function(val, idx) { setArenaBet(betObject, val) });
+    
+            // Pull your maximum bet
+            var content = document.getElementById("content").innerHTML;
+            var maxNPRegex = /You can only place up to\s+<b>(\d+)<\/b>/;
+            var maxNP = maxNPRegex.exec(content)[1];
+    
+            // Set maximum bet
+            var betField = document.getElementsByName("bet_amount")[0];
+            var blurEvent = new Event('blur');
+            betField.value = maxNP;
+            betField.dispatchEvent(blurEvent);        
+        }
+    });
 
-        // Pull your maximum bet
-        var content = document.getElementById("content").innerHTML;
-        var maxNPRegex = /You can only place up to\s+<b>(\d+)<\/b>/;
-        var maxNP = maxNPRegex.exec(content)[1];
-
-        // Set maximum bet
-        var betField = document.getElementsByName("bet_amount")[0];
-        var blurEvent = new Event('blur');
-        betField.value = maxNP;
-        betField.dispatchEvent(blurEvent);
-        
-        document.cookie = "food_club_bet=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
-    }
+    // Clear any bet object we may have
+    chrome.storage.local.remove(["betObject"], function() {});
 }

@@ -14,5 +14,6 @@
             "matches": ["http://www.neopets.com/*","https://www.reddit.com/r/neopets/comments/*"],
             "js": ["content.js"]
         }
-    ]
+    ],
+    "permissions": ["storage"]
 }
