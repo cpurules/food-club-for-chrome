@@ -75,7 +75,7 @@ if(window.location.href.endsWith("boochi_target")) {
                 betArena = betArena.toString().trim();
                 // There is an extra line break at the end of these that we can skip
                 if(betArena != "") {
-                    var betDataRegex = /^<b>([\s\w']+)<\/b>: ([\s\w']+)$/
+                    var betDataRegex = /^<b>([\s\w']+)<\/b>: ([\s\w'-]+)$/
                     var betData = betDataRegex.exec(betArena);
 
                     // Since our data is modeled after HGB which we started with, we
