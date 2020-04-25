@@ -75,13 +75,13 @@ if(window.location.href.endsWith("boochi_target")) {
                 betArena = betArena.toString().trim();
                 // There is an extra line break at the end of these that we can skip
                 if(betArena != "") {
-                    var betDataRegex = /^<b>([\s\w']+)<\/b>: ([\s\w'-]+)$/
+                    var betDataRegex = /^<b>([\s\w']+)<\/b>: ([\s\w'-]+\**)$/
                     var betData = betDataRegex.exec(betArena);
 
                     // Since our data is modeled after HGB which we started with, we
                     // need to massage this a little more to fit our case.  Luckily
                     // our name check on the bet page will still work :) 
-                    var betDataArena = betData[1].split(" ")[0].toLowerCase();
+                    var betDataArena = betData[1].split(" ")[0].toLowerCase().replace(/\*+/, "");
                     var betDataPirate = betData[2];
 
                     betObject[betDataArena] = betDataPirate;
